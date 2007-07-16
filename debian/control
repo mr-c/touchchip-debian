@@ -7,6 +7,6 @@ Standards-Version: 3.7.2
 
 Package: touchchip-driver
 Architecture: i386
-Depends: ${misc:Depends}, libbioapi-mds300-0, libusb-0.1-4, libmds-util0, libxext6, libx11-6, libxau6, libxdmcp6
+Depends: ${misc:Depends}, libbioapi-mds300-0, libusb-0.1-4, libmds-util0, libxext6, libx11-6, libxau6, libxdmcp6, unzip, wget(>= 1.9.1-4)
 Description: BioAPI-Compliant TouchChip TFM/ESS FingerPrint Driver
  From UPEK

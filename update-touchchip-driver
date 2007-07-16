@@ -34,7 +34,7 @@ DEST=/usr/lib
 ZIP_SHA512SUM="dd0a965eea21b6d04178b39847246187aaca32c297a7fc0a45dc8dfe663f4951627223760a322d0a8beb50c2bc8485db63c7e1e6dfa49612c15427fd0bace3ee"
 FILE_SHA512SUM="ce2a15817908429bc4462320cfde98dbbd198928abfd34bc194e2c9a2e1dd0a4cb8de7ee709ae3a0af341c7de28e68865ceeb863fc4c5b1f78fc588490945083"
 
-if [ -f "${DEST}/${FILE}" ] && [ `sha512sum ${DEST}/${FILE}` | awk '{print $1}' = "${FILE_SHA512SUM}" ] ; then
+if [ -f "${DEST}/${FILE}" ] && [ `sha512sum ${DEST}/${FILE} | awk '{print $1}'` = "${FILE_SHA512SUM}" ] ; then
 	exit 0
 fi
 
@@ -54,20 +54,20 @@ fi
 
 
 if [ -n "${LOCALCOPY}" ] ; then
-	if [ -e ${LOCALCOPY}/${ZIP} ] && [ "`sha512sum ${LOCALCOPY}/${ZIP}` | awk '{print $1}'" = "${ZIP_SHA512SUM}" ] ; then
+	if [ -e ${LOCALCOPY}/${ZIP} ] && [ "`sha512sum ${LOCALCOPY}/${ZIP} | awk '{print $1}'`" = "${ZIP_SHA512SUM}" ] ; then
 		cp ${LOCALCOPY}/${ZIP} .
-		unzip ${ZIP}
+		unzip ${ZIP} ${FILE}
 		cp ${FILE} /usr/lib/
 	else
-		EXITCODE = -1
+		EXITCODE=1
 	fi
 else
 	wget --continue --tries=1 --dns-timeout=10 --connect-timeout=5 --read-timeout=300 ${QUIET_ARG} --directory-prefix . ${URL}
-	if [ -e ${ZIP} ] && [ "`sha512sum ${ZIP}` | awk '{print $1}'" = "${ZIP_SHA512SUM}" ] ; then
-		unzip ${ZIP}
+	if [ -e ${ZIP} ] && [ "`sha512sum ${ZIP} | awk '{print $1}'`" = "${ZIP_SHA512SUM}" ] ; then
+		unzip ${ZIP} ${FILE}
 		cp ${FILE} /usr/lib/
 	else
-		EXITCODE = -1
+		EXITCODE=2
 	fi
 fi
 
