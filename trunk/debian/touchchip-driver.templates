@@ -2,8 +2,8 @@ Template: touchstripdriver/dldir
 Type: string
 Description: Directory holding TFMESS_BSP_LIN_1.0.zip (if already downloaded):
  If you have already downloaded UPEK's BioAPI compliant Touchstrip TFM/ESS
- driver type the name of the directory which contains it.
- . 
+ driver type the name of the directory which contains it
+ .
  If you haven't yet downloaded the driver, leave this blank and it will be
  downloaded for you. Approximately 900 KiB will need to be downloaded.
  .
