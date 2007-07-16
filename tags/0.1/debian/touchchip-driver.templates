@@ -1,0 +1,28 @@
+Template: touchstripdriver/dldir
+Type: string
+Description: Directory holding TFMESS_BSP_LIN_1.0.zip (if already downloaded):
+ If you have already downloaded UPEK's BioAPI compliant Touchstrip TFM/ESS
+ driver type the name of the directory which contains it
+ .
+ If you haven't yet downloaded the driver, leave this blank and it will be
+ downloaded for you. Approximately 900 KiB will need to be downloaded.
+ .
+ If you are not connected to the internet or do not wish to download the driver
+ now, enter "none" to abort. 
+
+Template: touchstripdriver/baddldir
+Type: note
+Description: TFMESS_BSP_LIN_1.0.zip not found.
+ The directory you entered either did not exist, or did not contain the UPEK
+ touchstrip TFM/ESS zip file.  Please re-enter the directory containing the
+ TFMESS_BSP_LIN_1.0.zip or enter "none" to abort.
+
+Template: touchstripdriver/http_proxy
+Type: string
+Description: Do you use a proxy?
+ If you need to use a proxy server, please enter it here (example:
+ http://192.168.0.1:8080).  This will cause the driver to be
+ downloaded using your proxy.
+ .
+ Leave this option blank if you don't use a proxy server.
+

@@ -1,0 +1,84 @@
+#!/bin/sh
+# Download UPEK's TouchChip TFM/ESS FingerPrint BSP for Linux
+#
+# (C) 2000,2001 Eric Sharkey.
+# (C) 2007 Michael R. Crusoe <michael@qrivy.net>.
+# adapted from Eric Sharkey's update-ms-fonts script
+# You may freely distribute this file under the terms of the GNU General
+# Public License, version 2 or later.
+
+#abort if anything goes wrong
+set -e
+
+if [ `id -u` != 0 ] ; then
+  echo "update-touchchip-driver can only be run as root."
+  exit -1
+fi
+
+for opt in "$@"; do
+    case "$opt" in
+        -q) QUIET_MODE=1 ;;
+        *) LOCALCOPY=$opt ;;
+    esac
+done
+if [ "$(echo $LOCALCOPY | tr '[:upper:]' '[:lower:]')" = "none" ] ; then
+  exit 0
+fi
+
+EXITCODE=0
+
+URL=http://www.upek.com/support/download/TFMESS_BSP_LIN_1.0.zip
+ZIP=TFMESS_BSP_LIN_1.0.zip
+FILE=libtfmessbsp.so
+DEST=/usr/lib
+ZIP_SHA512SUM="dd0a965eea21b6d04178b39847246187aaca32c297a7fc0a45dc8dfe663f4951627223760a322d0a8beb50c2bc8485db63c7e1e6dfa49612c15427fd0bace3ee"
+FILE_SHA512SUM="ce2a15817908429bc4462320cfde98dbbd198928abfd34bc194e2c9a2e1dd0a4cb8de7ee709ae3a0af341c7de28e68865ceeb863fc4c5b1f78fc588490945083"
+
+if [ -f "${DEST}/${FILE}" ] && [ `sha512sum ${DEST}/${FILE} | awk '{print $1}'` = "${FILE_SHA512SUM}" ] ; then
+	exit 0
+fi
+
+if [ "$URLOVERRIDE" ] ; then
+  URL="${URLOVERRIDE}"
+fi
+
+SCRATCHDIR=$(mktemp -t -d touchchip.XXXXXX)
+chmod 0755 ${SCRATCHDIR}
+cd ${SCRATCHDIR}
+
+if [ -n "${QUIET_MODE}" ] ; then
+     	QUIET_ARG="--quiet"
+else
+	QUIET_ARG=""
+fi
+
+
+if [ -n "${LOCALCOPY}" ] ; then
+	if [ -e ${LOCALCOPY}/${ZIP} ] && [ "`sha512sum ${LOCALCOPY}/${ZIP} | awk '{print $1}'`" = "${ZIP_SHA512SUM}" ] ; then
+		cp ${LOCALCOPY}/${ZIP} .
+		unzip ${ZIP} ${FILE}
+		cp ${FILE} /usr/lib/
+	else
+		EXITCODE=1
+	fi
+else
+	wget --continue --tries=1 --dns-timeout=10 --connect-timeout=5 --read-timeout=300 ${QUIET_ARG} --directory-prefix . ${URL}
+	if [ -e ${ZIP} ] && [ "`sha512sum ${ZIP} | awk '{print $1}'`" = "${ZIP_SHA512SUM}" ] ; then
+		unzip ${ZIP} ${FILE}
+		cp ${FILE} /usr/lib/
+	else
+		EXITCODE=2
+	fi
+fi
+
+#rm -rf $SCRATCHDIR
+
+if [ -z "$QUIETMODE" ] ; then
+    if [ $EXITCODE = 0 ] ; then
+        echo "Driver downloaded and installed."
+    else
+        echo "Error."
+    fi
+fi
+
+exit $EXITCODE
